@@ -6,6 +6,9 @@ import RecentOrders from "@/components/dashboard/RecentOrders";
 import ExportOrdersButton from "@/components/dashboard/ExportOrdersButton";
 import LogoBackground from "@/components/layout/LogoBackground";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function HomePage() {
   const { data, error } = await supabase
     .from("orders")
