@@ -32,14 +32,14 @@ export default function OrderFilters() {
     <div className="rounded-3xl bg-white p-6 shadow-sm">
       <div className="grid gap-4 md:grid-cols-4">
         <label className="block">
-          <span className="mb-2 block text-sm font-semibold text-gray-700">
+          <span className="mb-2 block text-sm font-semibold text-gray-900">
             Search Invoice / Phone / Customer
           </span>
           <input
             value={search}
             onChange={(e) => updateFilter("search", e.target.value)}
             placeholder="Example: STK1606101"
-            className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:border-orange-400"
+            className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none focus:border-orange-900"
           />
         </label>
 

@@ -35,7 +35,7 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
 
   if (params.search) {
     query = query.or(
-      `invoice_no.ilike.%${params.search}%,customer_phone.ilike.%${params.search}%,customer_name.ilike.%${params.search}%`
+      `invoice_no.ilike.%${params.search}%,customer_phone.ilike.%${params.search}%`
     );
   }
 
