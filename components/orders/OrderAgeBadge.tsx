@@ -11,11 +11,11 @@ export default function OrderAgeBadge({ order }: OrderAgeBadgeProps) {
 
   const className =
     status === "Overdue"
-      ? "bg-red-100 text-red-700"
+      ? "bg-red-500 text-white"
+      : status === "Customer Urgent"
+      ? "bg-orange-500 text-white"
       : status === "Warning"
       ? "bg-yellow-100 text-yellow-700"
-      : status === "Completed"
-      ? "bg-green-100 text-green-700"
       : "bg-gray-100 text-gray-700";
 
   return (
@@ -24,15 +24,21 @@ export default function OrderAgeBadge({ order }: OrderAgeBadgeProps) {
         {label}
       </span>
 
+      {status === "Customer Urgent" && (
+        <span className="text-xs font-semibold text-orange-500">
+          Urgent
+        </span>
+      )}
+
       {status === "Warning" && (
-        <span className="text-xs font-semibold text-yellow-700">
-          Needs attention
+        <span className="text-xs font-semibold text-yellow-500">
+          Attention
         </span>
       )}
 
       {status === "Overdue" && (
-        <span className="text-xs font-semibold text-red-700">
-          Urgent follow-up
+        <span className="text-xs font-semibold text-red-500">
+          Follow-up
         </span>
       )}
     </div>

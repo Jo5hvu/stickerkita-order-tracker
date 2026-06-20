@@ -17,6 +17,7 @@ export function countWorkingDays(startDate: string | null) {
   while (current <= today) {
     const day = current.getDay();
 
+    // 0 = Sunday, 6 = Saturday
     if (day !== 0 && day !== 6) {
       workingDays++;
     }
@@ -32,15 +33,11 @@ export function isCompletedOrder(order: Order) {
 }
 
 export function getOrderAgeStatus(order: Order) {
-  if (isCompletedOrder(order)) {
-    return "Completed";
-  }
+  const workingDays = countWorkingDays(order.order_date);
 
   if (order.is_urgent) {
     return "Customer Urgent";
   }
-
-  const workingDays = countWorkingDays(order.order_date);
 
   if (workingDays >= 5) {
     return "Overdue";
@@ -54,10 +51,6 @@ export function getOrderAgeStatus(order: Order) {
 }
 
 export function getOrderAgeLabel(order: Order) {
-  if (isCompletedOrder(order)) {
-    return "Completed";
-  }
-
   const workingDays = countWorkingDays(order.order_date);
 
   if (order.is_urgent) {

@@ -57,7 +57,7 @@ export default function OrderForm() {
       quantity: Number(form.quantity || 0),
       total_amount: Number(form.total_amount || 0),
       folder_name: folderName,
-      order_status: "Waiting Customer to Respond",
+      order_status: "Waiting Invoice",
       order_date: new Date().toISOString().slice(0, 10),
       is_urgent: form.is_urgent,
     });
@@ -193,7 +193,7 @@ export default function OrderForm() {
         <div className="rounded-2xl bg-gray-50 p-4">
           <p className="text-sm text-gray-500">Order Status</p>
           <p className="mt-1 font-semibold text-gray-900">
-            Waiting Customer to Respond
+            Waiting Invoice
           </p>
         </div>
       </section>
