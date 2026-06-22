@@ -6,8 +6,8 @@ export default function NewOrderPage() {
     <main className="min-h-screen bg-orange-50 p-6">
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="rounded-3xl bg-white p-6 shadow-sm">
-          <Link href="/orders" className="text-sm font-semibold text-orange-600">
-            ← Back to Orders
+          <Link href="/" className="text-sm font-semibold text-orange-600">
+            ← Back to Dashboard
           </Link>
 
           <h1 className="mt-3 text-3xl font-bold text-gray-900">

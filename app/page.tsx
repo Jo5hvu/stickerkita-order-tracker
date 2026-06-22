@@ -2,18 +2,50 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import type { Order } from "@/types/order";
 import DashboardCards from "@/components/dashboard/DashboardCards";
+import DashboardCharts from "@/components/dashboard/DashBoardChart";
 import RecentOrders from "@/components/dashboard/RecentOrders";
 import ExportOrdersButton from "@/components/dashboard/ExportOrdersButton";
 import LogoBackground from "@/components/layout/LogoBackground";
+import DashboardFilters from "@/components/dashboard/DashboardFilter";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function HomePage() {
-  const { data, error } = await supabase
+type HomePageProps = {
+  searchParams: Promise<{
+    search?: string;
+    status?: string;
+    designer?: string;
+  }>;
+};
+
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const params = await searchParams;
+
+  const search = params.search || "";
+  const status = params.status || "All";
+  const designer = params.designer || "All";
+
+  let query = supabase
     .from("orders")
     .select("*")
     .order("created_at", { ascending: false });
+
+  if (search) {
+    query = query.or(
+      `invoice_no.ilike.%${search}%,customer_phone.ilike.%${search}%`
+    );
+  }
+
+  if (status !== "All") {
+    query = query.eq("order_status", status);
+  }
+
+  if (designer !== "All") {
+    query = query.eq("designer_name", designer);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     return (
@@ -50,12 +82,6 @@ export default async function HomePage() {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/orders"
-              className="rounded-full border border-orange-200 bg-white px-5 py-3 text-center font-semibold text-orange-600"
-            >
-              View Orders
-            </Link>
 
             <Link
               href="/stock"
@@ -75,7 +101,11 @@ export default async function HomePage() {
           </div>
         </div>
 
+        <DashboardFilters search={search} status={status} designer={designer} />
+
         <DashboardCards orders={orders} />
+
+        <DashboardCharts orders={orders} />
 
         <RecentOrders orders={orders} />
       </div>

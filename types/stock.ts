@@ -4,12 +4,13 @@ export type StockMaterial = {
   supplier_name: string | null;
   stock_location: string | null;
   current_stock: number | null;
+  current_needed_sheets: number | null;
   minimum_order_qty: number | null;
   reorder_level: number | null;
   extra_defect_buffer: number | null;
   sheet_price: number | null;
-  created_at: string;
-  updated_at: string;
+  created_at: string | null;
+  updated_at: string | null;
 };
 
 export type StockMovement = {
@@ -17,9 +18,10 @@ export type StockMovement = {
   material_id: string;
   movement_type: string;
   quantity: number;
+  price_per_sheet: number | null;
+  total_amount: number | null;
   related_invoice_no: string | null;
-  defect_quantity: number | null;
   notes: string | null;
   movement_date: string | null;
-  created_at: string;
+  created_at: string | null;
 };

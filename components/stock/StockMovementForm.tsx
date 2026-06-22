@@ -9,7 +9,6 @@ import { stockMovementTypes } from "@/lib/options";
 import StockMaterialSelect from "@/components/stock/StockMaterialSelect";
 import type { StockMaterial } from "@/types/stock";
 
-
 type StockMovementFormProps = {
   materials: StockMaterial[];
 };
@@ -21,6 +20,7 @@ export default function StockMovementForm({ materials }: StockMovementFormProps)
     material_id: materials[0]?.id || "",
     movement_type: "Stock In",
     quantity: "",
+    price_per_sheet: materials[0]?.sheet_price?.toString() || "",
     related_invoice_no: "",
     notes: "",
   });
@@ -36,9 +36,12 @@ export default function StockMovementForm({ materials }: StockMovementFormProps)
     (material) => material.id === form.material_id
   );
 
+  const quantity = Number(form.quantity || 0);
+  const pricePerSheet = Number(form.price_per_sheet || 0);
+  const totalAmount = quantity * pricePerSheet;
+
   function getNewStockBalance() {
     const currentStock = Number(selectedMaterial?.current_stock || 0);
-    const quantity = Number(form.quantity || 0);
 
     if (form.movement_type === "Stock In") {
       return currentStock + quantity;
@@ -54,8 +57,6 @@ export default function StockMovementForm({ materials }: StockMovementFormProps)
       setErrorMessage("Please select a material.");
       return;
     }
-
-    const quantity = Number(form.quantity || 0);
 
     if (quantity <= 0) {
       setErrorMessage("Quantity must be more than 0.");
@@ -89,17 +90,27 @@ export default function StockMovementForm({ materials }: StockMovementFormProps)
       return;
     }
 
-    const { error: stockError } = await supabase
+    const { data: updatedStock, error: stockError } = await supabase
       .from("stock_materials")
       .update({
         current_stock: newStockBalance,
+        sheet_price:
+          form.movement_type === "Stock In"
+            ? pricePerSheet
+            : Number(selectedMaterial.sheet_price || 0),
       })
-      .eq("id", form.material_id);
+      .eq("id", form.material_id)
+      .select();
 
     setSaving(false);
 
     if (stockError) {
       setErrorMessage(stockError.message);
+      return;
+    }
+
+    if (!updatedStock || updatedStock.length === 0) {
+      setErrorMessage("Stock movement saved, but stock balance was not updated. Please check Supabase update policy.");
       return;
     }
 
@@ -148,6 +159,15 @@ export default function StockMovementForm({ materials }: StockMovementFormProps)
           />
 
           <FormInput
+            label="Price Per Sheet"
+            type="number"
+            step="0.01"
+            value={form.price_per_sheet}
+            onChange={(v) => updateField("price_per_sheet", v)}
+            placeholder="Example: 15.50"
+          />
+
+          <FormInput
             label="Related Invoice No. Optional"
             value={form.related_invoice_no}
             onChange={(v) => updateField("related_invoice_no", v)}
@@ -163,7 +183,7 @@ export default function StockMovementForm({ materials }: StockMovementFormProps)
             {selectedMaterial.material_name}
           </p>
 
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="mt-4 grid gap-4 md:grid-cols-3">
             <div>
               <p className="text-sm text-gray-500">Current Stock</p>
               <p className="text-2xl font-bold text-gray-900">
@@ -177,6 +197,15 @@ export default function StockMovementForm({ materials }: StockMovementFormProps)
                 {form.quantity ? getNewStockBalance() : selectedMaterial.current_stock || 0} sheets
               </p>
             </div>
+
+            {form.movement_type === "Stock In" && totalAmount > 0 && (
+              <div>
+                <p className="text-sm text-gray-500">Total Amount</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  RM {totalAmount.toFixed(2)}
+                </p>
+              </div>
+            )}
           </div>
         </section>
       )}

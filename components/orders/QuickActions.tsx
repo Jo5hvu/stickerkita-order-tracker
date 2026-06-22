@@ -21,6 +21,10 @@ export default function QuickActions({ order }: QuickActionsProps) {
       .from("orders")
       .update({
         order_status: status,
+        completion_date:
+          (status === "Posted" || status === "Delivered") && !order.completion_date
+            ? new Date().toISOString().slice(0, 10)
+            : order.completion_date,
       })
       .eq("id", order.id)
       .select();

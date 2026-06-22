@@ -20,7 +20,13 @@ export const shapes = [
   "Custom Shape",
 ];
 
-export const designers = ["Aimi", "Nadiah"];
+export const designers = [
+  "Aimi", 
+  "Nadiah",
+  "Rina",
+  "Idah",
+  "Aina",
+];
 
 export const depositStatuses = ["Pending", "Paid", "Not Required"];
 

@@ -7,6 +7,7 @@ import QuickActions from "@/components/orders/QuickActions";
 import OrderUpdateForm from "@/components/orders/OrderUpdateForm";
 import DeleteOrderButton from "@/components/orders/DeleteOrderButton";
 import UrgentOrderToggle from "@/components/orders/UrgentOrderToggle";
+import FullOrderEditForm from "@/components/orders/FullOrderEditForm";
 
 type OrderDetailPageProps = {
   params: Promise<{
@@ -43,8 +44,8 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
     <main className="min-h-screen bg-orange-50 p-6">
       <div className="mx-auto max-w-6xl space-y-6">
         <div className="rounded-3xl bg-white p-6 shadow-sm">
-          <Link href="/orders" className="text-sm font-semibold text-orange-600">
-            ← Back to Orders
+          <Link href="/" className="text-sm font-semibold text-orange-600">
+            ← Back to Dashboard
           </Link>
 
           <div className="mt-4 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -88,6 +89,8 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
               <InfoRow label="Price" value={`RM ${Number(order.total_amount || 0).toFixed(2)}`} />
               <InfoRow label="Assigned Designer" value={order.designer_name} />
             </InfoCard>
+
+            <FullOrderEditForm order={order} />
 
             <InfoCard title="Invoice Dates">
               <InfoRow label="Invoice Open Date" value={order.order_date} />

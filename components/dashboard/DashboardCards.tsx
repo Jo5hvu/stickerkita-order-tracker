@@ -52,11 +52,7 @@ export default function DashboardCards({ orders = [] }: DashboardCardsProps) {
       value: totalOrders,
       helper: "All orders recorded",
     },
-    {
-      label: "Active Orders",
-      value: activeOrders,
-      helper: "Not posted/delivered yet",
-    },
+  
     {
       label: "Urgent Orders",
       value: urgentOrders,
@@ -71,7 +67,7 @@ export default function DashboardCards({ orders = [] }: DashboardCardsProps) {
   ];
 
   return (
-    <section className="grid gap-4 md:grid-cols-4">
+    <section className="grid gap-4 md:grid-cols-3">
       {cards.map((card) => (
         <div
           key={card.label}

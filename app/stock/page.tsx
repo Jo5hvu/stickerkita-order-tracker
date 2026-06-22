@@ -4,6 +4,9 @@ import type { StockMaterial } from "@/types/stock";
 import StockTable from "@/components/stock/StockTable";
 import LogoBackground from "@/components/layout/LogoBackground";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function StockPage() {
   const { data, error } = await supabase
     .from("stock_materials")
@@ -36,7 +39,7 @@ export default async function StockPage() {
             </h1>
 
             <p className="text-gray-500">
-              Track sticker paper stock at Super Saver and restock from Super Fine.
+              Monitor current stock and manually update current needed sheets.
             </p>
           </div>
 

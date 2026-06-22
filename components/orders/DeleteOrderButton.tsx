@@ -35,7 +35,7 @@ export default function DeleteOrderButton({ order }: DeleteOrderButtonProps) {
       return;
     }
 
-    router.push("/orders");
+    router.push("/");
     router.refresh();
   }
 

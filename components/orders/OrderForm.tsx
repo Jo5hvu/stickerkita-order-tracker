@@ -76,7 +76,7 @@ export default function OrderForm() {
       return;
     }
 
-    router.push("/orders");
+    router.push("/");
     router.refresh();
   }
 
