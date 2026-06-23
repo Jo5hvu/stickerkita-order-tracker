@@ -2,27 +2,21 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import type { Order } from "@/types/order";
-import StatusBadge from "@/components/orders/StatusBadge";
-import QuickActions from "@/components/orders/QuickActions";
+import LogoBackground from "@/components/layout/LogoBackground";
+import FullOrderEditForm from "@/components/orders/FullOrderEditForm";
 import OrderUpdateForm from "@/components/orders/OrderUpdateForm";
 import DeleteOrderButton from "@/components/orders/DeleteOrderButton";
-import UrgentOrderToggle from "@/components/orders/UrgentOrderToggle";
-import FullOrderEditForm from "@/components/orders/FullOrderEditForm";
+import GenerateInvoiceButton from "@/components/orders/GenerateInvoiceButton";
+import StatusBadge from "@/components/orders/StatusBadge";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type OrderDetailPageProps = {
   params: Promise<{
     id: string;
   }>;
 };
-
-function addDays(dateString: string | null, days: number) {
-  if (!dateString) return "-";
-
-  const date = new Date(dateString);
-  date.setDate(date.getDate() + days);
-
-  return date.toISOString().slice(0, 10);
-}
 
 export default async function OrderDetailPage({ params }: OrderDetailPageProps) {
   const { id } = await params;
@@ -38,106 +32,76 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
   }
 
   const order = data as Order;
-  const invoiceDueDate = addDays(order.order_date, 10);
 
   return (
-    <main className="min-h-screen bg-orange-50 p-6">
-      <div className="mx-auto max-w-6xl space-y-6">
-        <div className="rounded-3xl bg-white p-6 shadow-sm">
+    <LogoBackground>
+      <div className="mx-auto max-w-7xl space-y-6">
+        <section className="rounded-3xl bg-white/90 p-6 shadow-sm">
           <Link href="/" className="text-sm font-semibold text-orange-600">
             ← Back to Dashboard
           </Link>
 
-          <div className="mt-4 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-start">
             <div>
-              <p className="text-sm font-semibold text-orange-600">
-                Order Detail
-              </p>
+              <p className="text-sm font-bold text-orange-600">Order Detail</p>
 
               <h1 className="mt-1 text-3xl font-bold text-gray-900">
                 {order.invoice_no}
               </h1>
 
-              <p className="mt-1 text-gray-500">
-                {order.customer_phone}
+              <p className="mt-2 text-gray-500">
+                {order.customer_phone || "-"}
+              </p>
+
+              <div className="mt-4 flex flex-wrap gap-2 text-sm text-gray-600">
+                <span className="rounded-full bg-gray-100 px-3 py-1">
+                  {order.material || "-"}
+                </span>
+
+                <span className="rounded-full bg-gray-100 px-3 py-1">
+                  {order.shape || "-"}
+                </span>
+
+                <span className="rounded-full bg-gray-100 px-3 py-1">
+                  {order.quantity || 0} pcs
+                </span>
+
+                <span className="rounded-full bg-gray-100 px-3 py-1">
+                  RM {Number(order.total_amount || 0).toFixed(2)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 rounded-3xl bg-gray-50 p-5">
+              <div>
+                <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-500">
+                  Current Status
+                </p>
+                <StatusBadge label={order.order_status} />
+              </div>
+
+              <GenerateInvoiceButton orderId={order.id} />
+            </div>
+          </div>
+        </section>
+
+        <FullOrderEditForm order={order} />
+
+        <OrderUpdateForm order={order} />
+
+        <section className="rounded-3xl border border-red-100 bg-white/90 p-6 shadow-sm">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-red-700">Danger Zone</h2>
+              <p className="text-sm text-gray-500">
+                Delete this order only if it was created by mistake.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              <StatusBadge label={order.order_status} />
-            </div>
-          </div>
-        </div>
-
-        <InfoCard title="Local File Reference">
-          <div className="rounded-2xl bg-orange-50 p-4">
-            <p className="text-sm text-gray-500">Folder Name</p>
-            <p className="mt-1 break-all text-lg font-bold text-gray-900">
-              {order.folder_name || "-"}
-            </p>
-          </div>
-        </InfoCard>
-
-        <section className="grid gap-6 lg:grid-cols-3">
-          <div className="space-y-6 lg:col-span-2">
-            <InfoCard title="Order Information">
-              <InfoRow label="Invoice Number" value={order.invoice_no} />
-              <InfoRow label="Phone Number" value={order.customer_phone} />
-              <InfoRow label="Sticker Type" value={order.material || order.product_type} />
-              <InfoRow label="Shape" value={order.shape} />
-              <InfoRow label="Pcs" value={order.quantity?.toString()} />
-              <InfoRow label="Price" value={`RM ${Number(order.total_amount || 0).toFixed(2)}`} />
-              <InfoRow label="Assigned Designer" value={order.designer_name} />
-            </InfoCard>
-
-            <FullOrderEditForm order={order} />
-
-            <InfoCard title="Invoice Dates">
-              <InfoRow label="Invoice Open Date" value={order.order_date} />
-              <InfoRow label="Invoice Due Date" value={invoiceDueDate} />
-            </InfoCard>
-          </div>
-
-          <div className="space-y-6 lg:col-span-1">
-            <UrgentOrderToggle order={order} />
-            <QuickActions order={order} />
-            <OrderUpdateForm order={order} />
             <DeleteOrderButton order={order} />
           </div>
         </section>
       </div>
-    </main>
-  );
-}
-
-function InfoCard({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-xl font-bold text-gray-900">{title}</h2>
-      <div className="space-y-3">{children}</div>
-    </div>
-  );
-}
-
-function InfoRow({
-  label,
-  value,
-}: {
-  label: string;
-  value?: string | null;
-}) {
-  return (
-    <div className="flex justify-between gap-4 border-b border-gray-100 pb-3 text-sm">
-      <span className="text-gray-500">{label}</span>
-      <span className="text-right font-semibold text-gray-900">
-        {value || "-"}
-      </span>
-    </div>
+    </LogoBackground>
   );
 }

@@ -7,6 +7,10 @@ import FormInput from "@/components/forms/FormInput";
 import FormSelect from "@/components/forms/FormSelect";
 import { designers, materials, shapes } from "@/lib/options";
 import { generateFolderName } from "@/lib/orderUtils";
+import {
+  calculateStickerPrice,
+  calculateStickerSize,
+} from "@/lib/stickerPricing";
 
 export default function OrderForm() {
   const router = useRouter();
@@ -20,6 +24,10 @@ export default function OrderForm() {
     shape: "Circle",
     quantity: "",
     total_amount: "",
+    sticker_size_cm: "",
+    sticker_width_cm: "",
+    sticker_height_cm: "",
+    cutting_type: "Cetak & Potong",
     is_urgent: false,
   });
 
@@ -31,8 +39,8 @@ export default function OrderForm() {
   }
 
   function updateCheckbox(name: string, checked: boolean) {
-  setForm((prev) => ({ ...prev, [name]: checked }));
-}
+    setForm((prev) => ({ ...prev, [name]: checked }));
+  }
 
   const folderName = generateFolderName(
     form.invoice_no,
@@ -40,6 +48,27 @@ export default function OrderForm() {
     form.product_type,
     form.designer_name
   );
+
+  function autoCalculatePrice() {
+    const finalSize = calculateStickerSize({
+      shape: form.shape,
+      size: Number(form.sticker_size_cm || 0),
+      width: Number(form.sticker_width_cm || 0),
+      height: Number(form.sticker_height_cm || 0),
+    });
+
+    const price = calculateStickerPrice({
+      material: form.material,
+      size: finalSize,
+      quantity: Number(form.quantity || 0),
+    });
+
+    setForm((prev) => ({
+      ...prev,
+      sticker_size_cm: finalSize.toString(),
+      total_amount: price.toString(),
+    }));
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -56,8 +85,12 @@ export default function OrderForm() {
       shape: form.shape,
       quantity: Number(form.quantity || 0),
       total_amount: Number(form.total_amount || 0),
+      sticker_size_cm: Number(form.sticker_size_cm || 0),
+      sticker_width_cm: Number(form.sticker_width_cm || 0),
+      sticker_height_cm: Number(form.sticker_height_cm || 0),
+      cutting_type: form.cutting_type,
       folder_name: folderName,
-      order_status: "Waiting Invoice",
+      order_status: "Waiting Customer to Respond",
       order_date: new Date().toISOString().slice(0, 10),
       is_urgent: form.is_urgent,
     });
@@ -137,13 +170,57 @@ export default function OrderForm() {
           <FormInput
             label="Pcs"
             type="number"
-            step="100"
+            step="1"
             min="100"
             value={form.quantity}
             onChange={(v) => updateField("quantity", v)}
             placeholder="Example: 1000"
             required
           />
+
+          <FormInput
+            label="Sticker Size CM"
+            type="number"
+            min="0"
+            value={form.sticker_size_cm}
+            onChange={(v) => updateField("sticker_size_cm", v)}
+            placeholder="Example: 6"
+          />
+
+          <FormInput
+            label="Width CM"
+            type="number"
+            min="0"
+            value={form.sticker_width_cm}
+            onChange={(v) => updateField("sticker_width_cm", v)}
+            placeholder="For rectangle/custom shape"
+          />
+
+          <FormInput
+            label="Height CM"
+            type="number"
+            min="0"
+            value={form.sticker_height_cm}
+            onChange={(v) => updateField("sticker_height_cm", v)}
+            placeholder="For rectangle/custom shape"
+          />
+
+          <FormInput
+            label="Cutting Type"
+            value={form.cutting_type}
+            onChange={(v) => updateField("cutting_type", v)}
+            placeholder="Cetak & Potong"
+          />
+
+          <div className="md:col-span-2">
+            <button
+              type="button"
+              onClick={autoCalculatePrice}
+              className="w-full rounded-2xl bg-green-600 px-4 py-3 font-bold text-white hover:bg-green-700 transition-colors"
+            >
+              Calculate Price
+            </button>
+          </div>
 
           <FormInput
             label="Price (RM)"
@@ -154,7 +231,7 @@ export default function OrderForm() {
             required
           />
 
-          <label className="flex items-center gap-3 rounded-2xl bg-red-50 p-4">
+          <label className="flex items-center gap-3 rounded-2xl bg-red-50 p-4 md:col-span-2">
             <input
               type="checkbox"
               checked={form.is_urgent}
@@ -193,7 +270,7 @@ export default function OrderForm() {
         <div className="rounded-2xl bg-gray-50 p-4">
           <p className="text-sm text-gray-500">Order Status</p>
           <p className="mt-1 font-semibold text-gray-900">
-            Waiting Invoice
+            Waiting Customer to Respond
           </p>
         </div>
       </section>

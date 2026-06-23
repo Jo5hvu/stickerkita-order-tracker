@@ -49,4 +49,10 @@ export type Order = {
 
   created_at: string;
   updated_at: string;
+
+  sticker_size_cm: number | null;
+  sticker_width_cm: number | null;
+  sticker_height_cm: number | null;
+  cutting_type: string | null;
+  
 };
