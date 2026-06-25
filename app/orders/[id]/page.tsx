@@ -8,6 +8,7 @@ import OrderUpdateForm from "@/components/orders/OrderUpdateForm";
 import DeleteOrderButton from "@/components/orders/DeleteOrderButton";
 import GenerateInvoiceButton from "@/components/orders/GenerateInvoiceButton";
 import StatusBadge from "@/components/orders/StatusBadge";
+import UrgentOrderToggle from "@/components/orders/UrgentOrderToggle";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -79,6 +80,8 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
                 </p>
                 <StatusBadge label={order.order_status} />
               </div>
+
+              <UrgentOrderToggle order={order} />
 
               <GenerateInvoiceButton orderId={order.id} />
             </div>

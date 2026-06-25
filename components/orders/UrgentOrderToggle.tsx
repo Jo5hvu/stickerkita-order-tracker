@@ -11,22 +11,23 @@ type UrgentOrderToggleProps = {
 
 export default function UrgentOrderToggle({ order }: UrgentOrderToggleProps) {
   const router = useRouter();
-  const [updating, setUpdating] = useState(false);
+  const [isUrgent, setIsUrgent] = useState(Boolean(order.is_urgent));
+  const [saving, setSaving] = useState(false);
 
-  async function toggleUrgent() {
-    setUpdating(true);
+  async function updateUrgent(value: boolean) {
+    setIsUrgent(value);
+    setSaving(true);
 
     const { error } = await supabase
       .from("orders")
-      .update({
-        is_urgent: !order.is_urgent,
-      })
+      .update({ is_urgent: value })
       .eq("id", order.id);
 
-    setUpdating(false);
+    setSaving(false);
 
     if (error) {
-      alert(`Failed to update urgent label: ${error.message}`);
+      alert(`Failed to update urgent status: ${error.message}`);
+      setIsUrgent(Boolean(order.is_urgent));
       return;
     }
 
@@ -34,29 +35,23 @@ export default function UrgentOrderToggle({ order }: UrgentOrderToggleProps) {
   }
 
   return (
-    <div className="rounded-3xl bg-white/90 p-6 shadow-sm">
-      <h2 className="text-xl font-bold text-gray-900">Urgent Label</h2>
+    <label className="flex cursor-pointer items-center gap-3 rounded-2xl bg-red-50 px-4 py-3">
+      <input
+        type="checkbox"
+        checked={isUrgent}
+        disabled={saving}
+        onChange={(e) => updateUrgent(e.target.checked)}
+        className="h-5 w-5 accent-red-600"
+      />
 
-      <p className="mt-1 text-sm text-gray-500">
-        Mark this order as urgent if the customer wants it in a short period of time.
-      </p>
-
-      <button
-        type="button"
-        onClick={toggleUrgent}
-        disabled={updating}
-        className={`mt-5 w-full rounded-full px-5 py-4 font-bold shadow-sm disabled:opacity-60 ${
-          order.is_urgent
-            ? "bg-red-600 text-white"
-            : "bg-red-50 text-red-700 border border-red-200"
-        }`}
-      >
-        {updating
-          ? "Updating..."
-          : order.is_urgent
-          ? "Remove Urgent Label"
-          : "Mark as Urgent"}
-      </button>
-    </div>
+      <div>
+        <p className="text-sm font-bold text-red-700">
+          Mark order as urgent
+        </p>
+        <p className="text-xs text-gray-500">
+          Use this when customer requests a short turnaround time.
+        </p>
+      </div>
+    </label>
   );
 }

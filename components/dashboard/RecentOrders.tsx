@@ -10,12 +10,21 @@ type RecentOrdersProps = {
 
 export default function RecentOrders({ orders }: RecentOrdersProps) {
   const dashboardOrders = [...orders].sort((a, b) => {
+    const aCompleted =
+      a.order_status === "Posted" || a.order_status === "Delivered";
+
+    const bCompleted =
+      b.order_status === "Posted" || b.order_status === "Delivered";
+
+    // Posted / Delivered orders always go to the bottom
+    if (aCompleted && !bCompleted) return 1;
+    if (!aCompleted && bCompleted) return -1;
+
     const priority = {
       "Customer Urgent": 4,
       Overdue: 3,
       Warning: 2,
       "On Track": 1,
-      Completed: 0,
     };
 
     return priority[getOrderAgeStatus(b)] - priority[getOrderAgeStatus(a)];

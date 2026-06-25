@@ -22,6 +22,11 @@ export default function DashboardCards({ orders = [] }: DashboardCardsProps) {
   ).length;
 
   const urgentOrders = orders.filter((order) => {
+    const isCompleted =
+      order.order_status === "Posted" || order.order_status === "Delivered";
+
+    if (isCompleted) return false;
+
     const status = getOrderAgeStatus(order);
 
     return status === "Overdue" || status === "Customer Urgent";
@@ -56,7 +61,7 @@ export default function DashboardCards({ orders = [] }: DashboardCardsProps) {
     {
       label: "Urgent Orders",
       value: urgentOrders,
-      helper: "5+ working days or customer urgent",
+      helper: "Incomplete urgent or overdue orders",
     },
     {
       label: "Total Sales",

@@ -77,8 +77,19 @@ export async function GET(_request: Request, { params }: RouteParams) {
 
   const cuttingType = order.cutting_type || order.shape || "-";
 
+  const shapeTranslations: Record<string, string> = {
+    Circle: "Bulat",
+    Square: "Segi Empat Sama",
+    Rectangle: "Segi Empat Tepat",
+    Oval: "Bujur",
+    "Custom Shape": "Bentuk Custom",
+  };
+
+  const stickerShape = shapeTranslations[order.shape || ""] || order.shape || "-";
+
   const description = [
     `Saiz Sticker : ${sizeText}`,
+    `Bentuk Sticker : ${stickerShape}`,
     `Jenis Sticker : ${material}`,
     `Jenis Potongan : ${cuttingType}`,
   ].join("\n");

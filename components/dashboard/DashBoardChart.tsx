@@ -28,7 +28,7 @@ function DonutChart({
       <div
         className="mx-auto mt-5 flex h-44 w-44 items-center justify-center rounded-full"
         style={{
-          background: `conic-gradient(#fd7c03 ${firstPercentage}%, #22c55e ${firstPercentage}% 100%)`,
+          background: `conic-gradient(#22c55e ${firstPercentage}%, #fd7c03 ${firstPercentage}% 100%)`,
         }}
       >
         <div className="flex h-28 w-28 flex-col items-center justify-center rounded-full bg-white">
