@@ -14,6 +14,31 @@ function cleanPhoneNumber(phone: string) {
   return cleaned;
 }
 
+function getDesignerPhone(designer: string) {
+  const designerPhones: Record<string, string> = {
+    Nadiah: "01161233279",
+    Idah: "01168561406",
+    Rina: "01162433365",
+    Wani: "01169975112",
+    Aimie: "0163660372",
+    Aimi: "0163660372",
+  };
+
+  return designerPhones[designer] || "";
+}
+
+function getDesignerWhatsAppLink(designer: string, invoiceNo: string) {
+  const phone = getDesignerPhone(designer);
+
+  if (!phone) {
+    return "-";
+  }
+
+  const cleanPhone = cleanPhoneNumber(phone);
+
+  return `https://www.wasap.my/+${cleanPhone}/No.tempahan-${invoiceNo}`;
+}
+
 export function getWhatsAppMessage(order: Order) {
   const invoiceNo = order.invoice_no || "-";
   const designer = order.designer_name || "-";
@@ -28,6 +53,30 @@ Kami telah menerima pertanyaan / detail tempahan sticker anda.
 No. Invoice: ${invoiceNo}
 
 Team kami akan semak detail tempahan anda dan update anda sebentar lagi. Terima kasih!`;
+  }
+
+  if (status === "Submit to Designer" || status === "Submitted to Designer") {
+    const designerLink = getDesignerWhatsAppLink(designer, invoiceNo);
+
+    return `Hi, StickerKita di sini 😊
+
+Tempahan anda telah dihantar kepada designer kami.
+
+No. Tempahan: ${invoiceNo}
+Designer: Cik ${designer}
+
+Designer kami akan hubungi anda melalui WhatsApp group untuk proses design. Nama group akan mengikut nombor rujukan tempahan anda.
+
+Untuk sebarang perubahan berkaitan design, boleh terus maklumkan kepada designer dalam group tersebut.
+
+Link designer:
+${designerLink}
+
+Waktu kerja designer:
+Isnin - Jumaat
+8.30 pagi - 6.00 petang
+
+Terima kasih.`;
   }
 
   if (status === "Design Confirm") {
