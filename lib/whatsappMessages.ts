@@ -43,9 +43,10 @@ export function getWhatsAppMessage(order: Order) {
   const invoiceNo = order.invoice_no || "-";
   const designer = order.designer_name || "-";
   const status = order.order_status || "";
+  const normalizedStatus = status.trim().toLowerCase();
   const trackingNote = order.tracking_pickup_note || "";
 
-  if (status === "Waiting Customer to Respond") {
+  if (normalizedStatus === "waiting customer to respond") {
     return `Hi, StickerKita di sini 😊
 
 Kami telah menerima pertanyaan / detail tempahan sticker anda.
@@ -55,7 +56,10 @@ No. Invoice: ${invoiceNo}
 Team kami akan semak detail tempahan anda dan update anda sebentar lagi. Terima kasih!`;
   }
 
-  if (status === "Submit to Designer" || status === "Submitted to Designer") {
+  if (
+    normalizedStatus === "submitted to designer" ||
+    normalizedStatus === "submited to designer"
+  ) {
     const designerLink = getDesignerWhatsAppLink(designer, invoiceNo);
 
     return `Hi, StickerKita di sini 😊
@@ -79,7 +83,7 @@ Isnin - Jumaat
 Terima kasih.`;
   }
 
-  if (status === "Design Confirm") {
+  if (normalizedStatus === "design confirm") {
     return `Hi, StickerKita di sini 😊
 
 Design sticker anda telah disahkan.
@@ -90,7 +94,7 @@ Designer: ${designer}
 Kami akan teruskan ke proses seterusnya.`;
   }
 
-  if (status === "Payment Made") {
+  if (normalizedStatus === "payment made") {
     return `Hi, StickerKita di sini 😊
 
 Bayaran untuk tempahan anda telah diterima.
@@ -100,7 +104,7 @@ No. Invoice: ${invoiceNo}
 Terima kasih! Tempahan anda akan disediakan untuk proses printing.`;
   }
 
-  if (status === "Submit for Printing") {
+  if (normalizedStatus === "submit for printing") {
     return `Hi, StickerKita di sini 😊
 
 Tempahan anda telah dihantar untuk proses printing.
@@ -110,7 +114,7 @@ No. Invoice: ${invoiceNo}
 Kami akan update semula selepas sticker siap dicetak.`;
   }
 
-  if (status === "Printed") {
+  if (normalizedStatus === "printed") {
     return `Hi, StickerKita di sini 😊
 
 Sticker anda telah siap dicetak.
@@ -120,7 +124,7 @@ No. Invoice: ${invoiceNo}
 Seterusnya, kami akan teruskan dengan proses cutting dan packing.`;
   }
 
-  if (status === "Ready to be Cut") {
+  if (normalizedStatus === "ready to be cut") {
     return `Hi, StickerKita di sini 😊
 
 Sticker anda sudah bersedia untuk proses cutting.
@@ -130,7 +134,7 @@ No. Invoice: ${invoiceNo}
 Kami akan update semula selepas tempahan siap dipack.`;
   }
 
-  if (status === "Packed") {
+  if (normalizedStatus === "packed") {
     return `Hi, StickerKita di sini 😊
 
 Tempahan anda telah siap dipack.
@@ -140,7 +144,7 @@ No. Invoice: ${invoiceNo}
 Tempahan akan dipos / diserahkan untuk pickup tidak lama lagi.`;
   }
 
-  if (status === "Posted") {
+  if (normalizedStatus === "posted") {
     return `Hi, StickerKita di sini 😊
 
 Tempahan anda telah dipos.
@@ -151,7 +155,7 @@ Tracking / Nota: ${trackingNote || "-"}
 Terima kasih kerana membuat tempahan dengan StickerKita!`;
   }
 
-  if (status === "Delivered") {
+  if (normalizedStatus === "delivered") {
     return `Hi, StickerKita di sini 😊
 
 Tempahan anda telah berjaya dihantar.
@@ -161,6 +165,7 @@ No. Invoice: ${invoiceNo}
 Terima kasih kerana memilih StickerKita. Semoga anda suka dengan sticker anda! 😊`;
   }
 
+  // Final fallback message
   return `Hi, StickerKita di sini 😊
 
 Berikut adalah update untuk tempahan anda.
