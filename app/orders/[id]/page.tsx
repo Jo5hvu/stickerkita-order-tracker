@@ -9,6 +9,8 @@ import DeleteOrderButton from "@/components/orders/DeleteOrderButton";
 import GenerateInvoiceButton from "@/components/orders/GenerateInvoiceButton";
 import StatusBadge from "@/components/orders/StatusBadge";
 import UrgentOrderToggle from "@/components/orders/UrgentOrderToggle";
+import WhatsAppActionButton from "@/components/orders/WhatsAppActionButton";
+import CustomerDesignToggle from "@/components/orders/CustomerDesignToggle";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -83,7 +85,11 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
 
               <UrgentOrderToggle order={order} />
 
+              <CustomerDesignToggle order={order} />
+
               <GenerateInvoiceButton orderId={order.id} />
+
+              <WhatsAppActionButton order={order} />
             </div>
           </div>
         </section>

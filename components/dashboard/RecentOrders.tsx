@@ -20,6 +20,10 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
     if (aCompleted && !bCompleted) return 1;
     if (!aCompleted && bCompleted) return -1;
 
+    // Customer design orders appear higher
+    if (a.has_customer_design && !b.has_customer_design) return -1;
+    if (!a.has_customer_design && b.has_customer_design) return 1;
+
     const priority = {
       "Customer Urgent": 4,
       Overdue: 3,
@@ -61,54 +65,66 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
           </thead>
 
           <tbody>
-            {dashboardOrders.map((order) => (
-              <tr key={order.id} className="border-b text-sm">
-                <td className="py-3 font-semibold text-gray-900">
-                  {order.invoice_no}
-                </td>
+            {dashboardOrders.map((order) => {
+              const rowBg = order.has_customer_design ? "bg-sky-100" : "bg-white/60";
 
-                <td className="py-3 text-gray-600">
-                  {order.customer_phone}
-                </td>
+              return (
+                <tr key={order.id} className="border-b text-sm transition">
+                  <td className={`py-3 font-semibold text-gray-900 ${rowBg}`}>
+                    <div className="flex flex-col gap-1">
+                      <span>{order.invoice_no}</span>
 
-                <td className="py-3 text-gray-600">
-                  {order.material || "-"}
-                </td>
+                      {order.has_customer_design && (
+                        <span className="w-fit rounded-full bg-blue-200 px-2 py-1 text-xs font-bold text-blue-800">
+                          Customer Design
+                        </span>
+                      )}
+                    </div>
+                  </td>
 
-                <td className="py-3 text-gray-600">
-                  {order.shape || "-"}
-                </td>
+                  <td className={`py-3 text-gray-600 ${rowBg}`}>
+                    {order.customer_phone}
+                  </td>
 
-                <td className="py-3 text-gray-600">
-                  {order.quantity || "-"}
-                </td>
+                  <td className={`py-3 text-gray-600 ${rowBg}`}>
+                    {order.material || "-"}
+                  </td>
 
-                <td className="py-3 text-gray-600">
-                  RM {Number(order.total_amount || 0).toFixed(2)}
-                </td>
+                  <td className={`py-3 text-gray-600 ${rowBg}`}>
+                    {order.shape || "-"}
+                  </td>
 
-                <td className="py-3 text-gray-600">
-                  {order.designer_name || "-"}
-                </td>
+                  <td className={`py-3 text-gray-600 ${rowBg}`}>
+                    {order.quantity || "-"}
+                  </td>
 
-                <td className="py-3">
-                  <OrderAgeBadge order={order} />
-                </td>
+                  <td className={`py-3 text-gray-600 ${rowBg}`}>
+                    RM {Number(order.total_amount || 0).toFixed(2)}
+                  </td>
 
-                <td className="py-3">
-                  <InlineStatusSelect order={order} />
-                </td>
+                  <td className={`py-3 text-gray-600 ${rowBg}`}>
+                    {order.designer_name || "-"}
+                  </td>
 
-                <td className="py-3">
-                  <Link
-                    href={`/orders/${order.id}`}
-                    className="font-semibold text-orange-600"
-                  >
-                    Open
-                  </Link>
-                </td>
-              </tr>
-            ))}
+                  <td className={`py-3 ${rowBg}`}>
+                    <OrderAgeBadge order={order} />
+                  </td>
+
+                  <td className={`py-3 ${rowBg}`}>
+                    <InlineStatusSelect order={order} />
+                  </td>
+
+                  <td className={`py-3 ${rowBg}`}>
+                    <Link
+                      href={`/orders/${order.id}`}
+                      className="font-semibold text-orange-600"
+                    >
+                      Open
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
 
             {dashboardOrders.length === 0 && (
               <tr>

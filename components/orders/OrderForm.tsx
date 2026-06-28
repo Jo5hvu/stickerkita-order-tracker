@@ -28,6 +28,7 @@ export default function OrderForm() {
     sticker_width_cm: "",
     sticker_height_cm: "",
     cutting_type: "Cetak & Potong",
+    has_customer_design: false,
     is_urgent: false,
   });
 
@@ -92,6 +93,7 @@ export default function OrderForm() {
       folder_name: folderName,
       order_status: "Waiting Customer to Respond",
       order_date: new Date().toISOString().slice(0, 10),
+      has_customer_design: form.has_customer_design,
       is_urgent: form.is_urgent,
     });
 
@@ -230,6 +232,27 @@ export default function OrderForm() {
             placeholder="Example: 59"
             required
           />
+
+          <label className="flex items-center gap-3 rounded-2xl bg-blue-50 p-4 md:col-span-2">
+            <input
+              type="checkbox"
+              checked={form.has_customer_design}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  has_customer_design: e.target.checked,
+                }))
+              }
+              className="h-5 w-5 accent-blue-600"
+            />
+
+            <div>
+              <p className="font-bold text-gray-900">Customer already has design</p>
+              <p className="text-sm text-gray-500">
+                Mark this if customer provided their own design file.
+              </p>
+            </div>
+          </label>
 
           <label className="flex items-center gap-3 rounded-2xl bg-red-50 p-4 md:col-span-2">
             <input

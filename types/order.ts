@@ -45,6 +45,7 @@ export type Order = {
   design_file_link: string | null;
   remarks: string | null;
 
+  has_customer_design: boolean | null;
   is_urgent: boolean | null;
 
   created_at: string;
@@ -54,5 +55,5 @@ export type Order = {
   sticker_width_cm: number | null;
   sticker_height_cm: number | null;
   cutting_type: string | null;
-  
+
 };
