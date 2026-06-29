@@ -41,8 +41,9 @@ export const designStatuses = [
 ];
 
 export const orderStatuses = [
-  "Waiting Invoice",
-  "Submited to Designer",
+  "Waiting Customer to Respond",
+  "Submitted to Designer",
+  "Design Confirm",
   "Payment Made",
   "Submit for Printing",
   "Printed",
@@ -50,6 +51,7 @@ export const orderStatuses = [
   "Packed",
   "Posted",
   "Delivered",
+  "Customer Unresponsive",
 ];
 
 export const paymentStatuses = ["Pending", "Paid", "Partial"];

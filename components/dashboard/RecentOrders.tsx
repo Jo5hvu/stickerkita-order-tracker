@@ -16,11 +16,18 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
     const bCompleted =
       b.order_status === "Posted" || b.order_status === "Delivered";
 
-    // Posted / Delivered orders always go to the bottom
+    const aUnresponsive = a.order_status === "Customer Unresponsive";
+    const bUnresponsive = b.order_status === "Customer Unresponsive";
+
+    // Customer Unresponsive orders go to the bottom
+    if (aUnresponsive && !bUnresponsive) return 1;
+    if (!aUnresponsive && bUnresponsive) return -1;
+
+    // Posted / Delivered orders go near bottom, above unresponsive
     if (aCompleted && !bCompleted) return 1;
     if (!aCompleted && bCompleted) return -1;
 
-    // Customer design orders appear higher
+    // Customer design orders appear higher among active orders
     if (a.has_customer_design && !b.has_customer_design) return -1;
     if (!a.has_customer_design && b.has_customer_design) return 1;
 
@@ -31,7 +38,18 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
       "On Track": 1,
     };
 
-    return priority[getOrderAgeStatus(b)] - priority[getOrderAgeStatus(a)];
+    const aPriority = priority[getOrderAgeStatus(a)] || 0;
+    const bPriority = priority[getOrderAgeStatus(b)] || 0;
+
+    if (aPriority !== bPriority) {
+      return bPriority - aPriority;
+    }
+
+    // If same priority, newest orders appear first
+    return (
+      new Date(b.created_at || b.order_date || "").getTime() -
+      new Date(a.created_at || a.order_date || "").getTime()
+    );
   });
 
   return (
@@ -66,11 +84,23 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
 
           <tbody>
             {dashboardOrders.map((order) => {
-              const rowBg = order.has_customer_design ? "bg-sky-100" : "bg-white/60";
+              const isUnresponsive = order.order_status === "Customer Unresponsive";
+              const isCompleted =
+                order.order_status === "Posted" || order.order_status === "Delivered";
+
+              const rowBg = isUnresponsive
+                ? "bg-gray-100"
+                : order.has_customer_design
+                ? "bg-sky-100"
+                : isCompleted
+                ? "bg-green-50"
+                : "bg-white/60";
+
+              const rowText = isUnresponsive ? "line-through text-gray-400" : "";
 
               return (
                 <tr key={order.id} className="border-b text-sm transition">
-                  <td className={`py-3 font-semibold text-gray-900 ${rowBg}`}>
+                  <td className={`py-3 font-semibold text-gray-900 ${rowBg} ${rowText}`}>
                     <div className="flex flex-col gap-1">
                       <span>{order.invoice_no}</span>
 
@@ -79,30 +109,36 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
                           Customer Design
                         </span>
                       )}
+
+                      {order.order_status === "Customer Unresponsive" && (
+                        <span className="w-fit rounded-full bg-gray-200 px-2 py-1 text-xs font-bold text-gray-700">
+                          Customer Unresponsive
+                        </span>
+                      )}
                     </div>
                   </td>
 
-                  <td className={`py-3 text-gray-600 ${rowBg}`}>
+                  <td className={`py-3 text-gray-600 ${rowBg} ${rowText}`}>
                     {order.customer_phone}
                   </td>
 
-                  <td className={`py-3 text-gray-600 ${rowBg}`}>
+                  <td className={`py-3 text-gray-600 ${rowBg} ${rowText}`}>
                     {order.material || "-"}
                   </td>
 
-                  <td className={`py-3 text-gray-600 ${rowBg}`}>
+                  <td className={`py-3 text-gray-600 ${rowBg} ${rowText}`}>
                     {order.shape || "-"}
                   </td>
 
-                  <td className={`py-3 text-gray-600 ${rowBg}`}>
+                  <td className={`py-3 text-gray-600 ${rowBg} ${rowText}`}>
                     {order.quantity || "-"}
                   </td>
 
-                  <td className={`py-3 text-gray-600 ${rowBg}`}>
+                  <td className={`py-3 text-gray-600 ${rowBg} ${rowText}`}>
                     RM {Number(order.total_amount || 0).toFixed(2)}
                   </td>
 
-                  <td className={`py-3 text-gray-600 ${rowBg}`}>
+                  <td className={`py-3 text-gray-600 ${rowBg} ${rowText}`}>
                     {order.designer_name || "-"}
                   </td>
 

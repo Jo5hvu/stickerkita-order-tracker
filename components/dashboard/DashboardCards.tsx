@@ -25,16 +25,28 @@ export default function DashboardCards({ orders = [] }: DashboardCardsProps) {
     const isCompleted =
       order.order_status === "Posted" || order.order_status === "Delivered";
 
-    if (isCompleted) return false;
+    const isUnresponsive = order.order_status === "Customer Unresponsive";
+
+    if (isCompleted || isUnresponsive) return false;
 
     const status = getOrderAgeStatus(order);
 
     return status === "Overdue" || status === "Customer Urgent";
   }).length;
 
-  const totalSales = orders.reduce((sum, order) => {
-    return sum + Number(order.total_amount || 0);
-  }, 0);
+  const paidStatuses = [
+    "Payment Made",
+    "Submit for Printing",
+    "Printed",
+    "Ready to be Cut",
+    "Packed",
+    "Posted",
+    "Delivered",
+  ];
+
+  const totalSales = orders
+    .filter((order) => paidStatuses.includes(order.order_status || ""))
+    .reduce((sum, order) => sum + Number(order.total_amount || 0), 0);
 
   function handleSalesVisibility() {
     if (showSales) {

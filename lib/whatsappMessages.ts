@@ -47,7 +47,7 @@ export function getWhatsAppMessage(order: Order) {
   const trackingNote = order.tracking_pickup_note || "";
 
   if (normalizedStatus === "waiting customer to respond") {
-    return `Hi, StickerKita di sini 😊
+    return `Hi, StickerKita di sini 
 
 Kami telah menerima pertanyaan / detail tempahan sticker anda.
 
@@ -62,7 +62,7 @@ Team kami akan semak detail tempahan anda dan update anda sebentar lagi. Terima 
   ) {
     const designerLink = getDesignerWhatsAppLink(designer, invoiceNo);
 
-    return `Hi, StickerKita di sini 😊
+    return `Hi, StickerKita di sini 
 
 Tempahan anda telah dihantar kepada designer kami.
 
@@ -84,7 +84,7 @@ Terima kasih.`;
   }
 
   if (normalizedStatus === "design confirm") {
-    return `Hi, StickerKita di sini 😊
+    return `Hi, StickerKita di sini 
 
 Design sticker anda telah disahkan.
 
@@ -95,7 +95,7 @@ Kami akan teruskan ke proses seterusnya.`;
   }
 
   if (normalizedStatus === "payment made") {
-    return `Hi, StickerKita di sini 😊
+    return `Hi, StickerKita di sini 
 
 Bayaran untuk tempahan anda telah diterima.
 
@@ -105,7 +105,7 @@ Terima kasih! Tempahan anda akan disediakan untuk proses printing.`;
   }
 
   if (normalizedStatus === "submit for printing") {
-    return `Hi, StickerKita di sini 😊
+    return `Hi, StickerKita di sini 
 
 Tempahan anda telah dihantar untuk proses printing.
 
@@ -115,7 +115,7 @@ Kami akan update semula selepas sticker siap dicetak.`;
   }
 
   if (normalizedStatus === "printed") {
-    return `Hi, StickerKita di sini 😊
+    return `Hi, StickerKita di sini 
 
 Sticker anda telah siap dicetak.
 
@@ -125,7 +125,7 @@ Seterusnya, kami akan teruskan dengan proses cutting dan packing.`;
   }
 
   if (normalizedStatus === "ready to be cut") {
-    return `Hi, StickerKita di sini 😊
+    return `Hi, StickerKita di sini 
 
 Sticker anda sudah bersedia untuk proses cutting.
 
@@ -135,7 +135,7 @@ Kami akan update semula selepas tempahan siap dipack.`;
   }
 
   if (normalizedStatus === "packed") {
-    return `Hi, StickerKita di sini 😊
+    return `Hi, StickerKita di sini 
 
 Tempahan anda telah siap dipack.
 
@@ -145,7 +145,7 @@ Tempahan akan dipos / diserahkan untuk pickup tidak lama lagi.`;
   }
 
   if (normalizedStatus === "posted") {
-    return `Hi, StickerKita di sini 😊
+    return `Hi, StickerKita di sini 
 
 Tempahan anda telah dipos.
 
@@ -156,17 +156,17 @@ Terima kasih kerana membuat tempahan dengan StickerKita!`;
   }
 
   if (normalizedStatus === "delivered") {
-    return `Hi, StickerKita di sini 😊
+    return `Hi, StickerKita di sini 
 
 Tempahan anda telah berjaya dihantar.
 
 No. Invoice: ${invoiceNo}
 
-Terima kasih kerana memilih StickerKita. Semoga anda suka dengan sticker anda! 😊`;
+Terima kasih kerana memilih StickerKita. Semoga anda suka dengan sticker anda! `;
   }
 
   // Final fallback message
-  return `Hi, StickerKita di sini 😊
+  return `Hi, StickerKita di sini 
 
 Berikut adalah update untuk tempahan anda.
 
