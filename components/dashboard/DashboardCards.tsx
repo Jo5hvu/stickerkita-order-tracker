@@ -26,8 +26,9 @@ export default function DashboardCards({ orders = [] }: DashboardCardsProps) {
       order.order_status === "Posted" || order.order_status === "Delivered";
 
     const isUnresponsive = order.order_status === "Customer Unresponsive";
+    const isOnHold = order.order_status === "Customer On Hold";
 
-    if (isCompleted || isUnresponsive) return false;
+    if (isCompleted || isUnresponsive || isOnHold) return false;
 
     const status = getOrderAgeStatus(order);
 

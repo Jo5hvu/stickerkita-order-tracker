@@ -51,6 +51,7 @@ export const orderStatuses = [
   "Packed",
   "Posted",
   "Delivered",
+  "Customer on Hold",
   "Customer Unresponsive",
 ];
 

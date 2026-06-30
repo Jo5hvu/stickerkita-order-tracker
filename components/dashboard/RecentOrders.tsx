@@ -19,11 +19,18 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
     const aUnresponsive = a.order_status === "Customer Unresponsive";
     const bUnresponsive = b.order_status === "Customer Unresponsive";
 
-    // Customer Unresponsive orders go to the bottom
+    const aOnHold = a.order_status === "Customer On Hold";
+    const bOnHold = b.order_status === "Customer On Hold";
+
+    // Customer Unresponsive goes to the very bottom
     if (aUnresponsive && !bUnresponsive) return 1;
     if (!aUnresponsive && bUnresponsive) return -1;
 
-    // Posted / Delivered orders go near bottom, above unresponsive
+    // Customer On Hold goes near bottom, above unresponsive
+    if (aOnHold && !bOnHold) return 1;
+    if (!aOnHold && bOnHold) return -1;
+
+    // Posted / Delivered goes near bottom, above on hold and unresponsive
     if (aCompleted && !bCompleted) return 1;
     if (!aCompleted && bCompleted) return -1;
 
@@ -85,11 +92,14 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
           <tbody>
             {dashboardOrders.map((order) => {
               const isUnresponsive = order.order_status === "Customer Unresponsive";
+              const isOnHold = order.order_status === "Customer On Hold";
               const isCompleted =
                 order.order_status === "Posted" || order.order_status === "Delivered";
 
               const rowBg = isUnresponsive
                 ? "bg-gray-100"
+                : isOnHold
+                ? "bg-yellow-50"
                 : order.has_customer_design
                 ? "bg-sky-100"
                 : isCompleted
@@ -107,6 +117,12 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
                       {order.has_customer_design && (
                         <span className="w-fit rounded-full bg-blue-200 px-2 py-1 text-xs font-bold text-blue-800">
                           Customer Design
+                        </span>
+                      )}
+
+                      {order.order_status === "Customer On Hold" && (
+                        <span className="w-fit rounded-full bg-yellow-100 px-2 py-1 text-xs font-bold text-yellow-700">
+                          Customer On Hold
                         </span>
                       )}
 

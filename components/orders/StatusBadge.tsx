@@ -8,6 +8,8 @@ export default function StatusBadge({ label }: StatusBadgeProps) {
   const className =
     status === "Customer Unresponsive"
       ? "bg-gray-200 text-gray-700"
+      : status === "Customer On Hold"
+      ? "bg-yellow-100 text-yellow-700"
       : status === "Delivered" || status === "Posted"
       ? "bg-green-100 text-green-700"
       : status === "Packed" || status === "Ready to be Cut"
