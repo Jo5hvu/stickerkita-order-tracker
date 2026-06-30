@@ -2,7 +2,6 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import type { Order } from "@/types/order";
 import DashboardCards from "@/components/dashboard/DashboardCards";
-import DashboardCharts from "@/components/dashboard/DashBoardChart";
 import RecentOrders from "@/components/dashboard/RecentOrders";
 import ExportOrdersButton from "@/components/dashboard/ExportOrdersButton";
 import LogoBackground from "@/components/layout/LogoBackground";
@@ -12,19 +11,21 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type HomePageProps = {
-  searchParams: Promise<{
+  searchParams?: Promise<{
     search?: string;
     status?: string;
     designer?: string;
+    view?: string;
   }>;
 };
 
 export default async function HomePage({ searchParams }: HomePageProps) {
   const params = await searchParams;
 
-  const search = params.search || "";
-  const status = params.status || "All";
-  const designer = params.designer || "All";
+  const search = params?.search || "";
+  const status = params?.status || "All";
+  const designer = params?.designer || "All";
+  const view = params?.view || "active";
 
   let query = supabase
     .from("orders")
@@ -101,11 +102,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </div>
         </div>
 
-        <DashboardFilters search={search} status={status} designer={designer} />
-
         <DashboardCards orders={orders} />
 
-        <DashboardCharts orders={orders} />
+        <DashboardFilters
+          search={search}
+          status={status}
+          designer={designer}
+          view={view}
+        />
 
         <RecentOrders orders={orders} />
       </div>

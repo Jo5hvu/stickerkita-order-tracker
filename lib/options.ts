@@ -42,6 +42,7 @@ export const designStatuses = [
 
 export const orderStatuses = [
   "Waiting Customer to Respond",
+  "Waiting Invoice",
   "Submitted to Designer",
   "Design Confirm",
   "Payment Made",
