@@ -173,7 +173,7 @@ export default function OrderForm() {
             label="Pcs"
             type="number"
             step="1"
-            min="100"
+            min="1"
             value={form.quantity}
             onChange={(v) => updateField("quantity", v)}
             placeholder="Example: 1000"

@@ -124,7 +124,7 @@ export default function FullOrderEditForm({ order }: FullOrderEditFormProps) {
           label="Pcs"
           type="number"
           step="1"
-          min="100"
+          min="1"
           value={form.quantity}
           onChange={(v) => updateField("quantity", v)}
           required
